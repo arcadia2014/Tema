@@ -1,0 +1,90 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;  //Utilizado para hacer las listas dinamicas
+import java.util.Collections; //EEsta extencion se utilizo para prdenar las ineas dentro de los cubos
+
+public class BucketSort {
+
+    public static void bucketSort(int[] array) {  
+        int n = array.length;
+
+        // Encontrar el valor mínimo y máximo del arreglo
+    
+        int min = array[0];
+        int max = array[0];
+        for (int num : array) {
+            if (num < min) min = num;
+            if (num > max) max = num;
+        }
+
+        // Crear los buckets
+        //ste ciclo recorre todo el arreglo y ajusta las variables 
+        //min y max para asegurarse de que contengan el valor mínimo y
+        // máximo del arreglo, respectivamente.
+        @SuppressWarnings("unchecked")
+        ArrayList<Integer>[] buckets = (ArrayList<Integer>[]) new ArrayList[n];
+
+        // Inicializar los bucketse crea un arreglo de ArrayList de enteros, 
+        //llamado buckets.
+        for (int i = 0; i < n; i++) {
+            buckets[i] = new ArrayList<>();
+        }
+
+        // Distribuir los elementos en los buckets
+        for (int num : array) {
+            int bucketIndex = (int) ((num - min) / (double) (max - min + 1) * n);
+            buckets[bucketIndex].add(num);
+        }
+
+        // Ordenar cada bucket
+        for (int i = 0; i < n; i++) {
+            Collections.sort(buckets[i]);
+        }
+
+        // Combinar los elementos de los buckets en el array original
+        int index = 0;
+        for (ArrayList<Integer> bucket : buckets) {
+            for (int num : bucket) {
+                array[index++] = num;
+            }
+        }
+    }
+
+    // Método para imprimir el arreglo
+    public static void printArray(int[] array) {
+        for (int num : array) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+
+    // Método para leer datos desde el teclado
+    public static int[] readFromKeyboard() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Ingrese la cantidad de elementos:");
+        int n = Integer.parseInt(reader.readLine());
+
+        int[] array = new int[n];
+        System.out.println("Ingrese los elementos:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Elemento " + (i + 1) + ": ");
+            array[i] = Integer.parseInt(reader.readLine());
+        }
+        return array;
+    }
+
+    // Método principal
+    public static void main(String[] args) throws IOException {
+        int[] array = readFromKeyboard();
+
+        System.out.println("Arreglo original:");
+        printArray(array);
+
+        // Ordenar el arreglo usando Bucket Sort
+        bucketSort(array);
+
+        System.out.println("Arreglo ordenado:");
+        printArray(array);
+    }
+}
